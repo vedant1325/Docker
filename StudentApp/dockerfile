@@ -1,0 +1,16 @@
+FROM ubuntu:20.04
+LABEL maintainer="vedant"
+RUN apt update && apt install unzip openjdk-11-jdk -y
+
+ADD https://dlcdn.apache.org/tomcat/tomcat-11/v11.0.9/bin/apache-tomcat-11.0.9.zip  /opt
+
+WORKDIR /opt
+RUN unzip apache-tomcat-11.0.9.zip 
+
+COPY context.xml /opt/apache-tomcat-11.0.9/conf/context.xml
+ADD https://s3-us-west-2.amazonaws.com/studentapi-cit/student.war /opt/apache-tomcat-9.0.107/webapps/student.war
+ADD https://s3-us-west-2.amazonaws.com/studentapi-cit/mysql-connector.jar /opt/apache-tomcat-9.0.107/lib/mysql-connector.jar
+
+RUN chmod +rwx /opt/apache-tomcat-9.0.107/bin/*.sh
+EXPOSE 8080
+CMD ["/opt/apache-tomcat-9.0.107/bin/catalina.sh", "run"]
